@@ -2,15 +2,11 @@
 
 namespace App\Filament\Resources\PenjualanDetails;
 
-use App\Filament\Resources\PenjualanDetails\Pages\CreatePenjualanDetail;
-use App\Filament\Resources\PenjualanDetails\Pages\EditPenjualanDetail;
 use App\Filament\Resources\PenjualanDetails\Pages\ListPenjualanDetails;
-use App\Filament\Resources\PenjualanDetails\Schemas\PenjualanDetailForm;
 use App\Filament\Resources\PenjualanDetails\Tables\PenjualanDetailsTable;
 use App\Models\PenjualanDetail;
 use BackedEnum;
 use Filament\Resources\Resource;
-use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use UnitEnum;
 
@@ -25,11 +21,6 @@ class PenjualanDetailResource extends Resource
     protected static string|UnitEnum|null $navigationGroup = 'Transaksi';
 
     protected static ?int $navigationSort = 8;
-
-    public static function form(Schema $schema): Schema
-    {
-        return PenjualanDetailForm::configure($schema);
-    }
 
     public static function table(Table $table): Table
     {
@@ -47,8 +38,6 @@ class PenjualanDetailResource extends Resource
     {
         return [
             'index' => ListPenjualanDetails::route('/'),
-            'create' => CreatePenjualanDetail::route('/create'),
-            'edit' => EditPenjualanDetail::route('/{record}/edit'),
         ];
     }
 }

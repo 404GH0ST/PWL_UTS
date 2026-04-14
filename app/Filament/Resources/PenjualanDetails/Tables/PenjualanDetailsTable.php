@@ -2,10 +2,6 @@
 
 namespace App\Filament\Resources\PenjualanDetails\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -35,6 +31,10 @@ class PenjualanDetailsTable
                     ->label('Jumlah')
                     ->numeric()
                     ->sortable(),
+                TextColumn::make('subtotal')
+                    ->label('Subtotal')
+                    ->state(fn ($record): int => $record->harga * $record->jumlah)
+                    ->money('IDR'),
             ])
             ->filters([
                 SelectFilter::make('penjualan_id')
@@ -44,14 +44,7 @@ class PenjualanDetailsTable
                     ->label('Barang')
                     ->relationship('barang', 'barang_nama'),
             ])
-            ->recordActions([
-                EditAction::make(),
-                DeleteAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->recordActions([])
+            ->toolbarActions([]);
     }
 }
