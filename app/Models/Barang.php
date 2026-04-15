@@ -37,11 +37,19 @@ class Barang extends Model
 
     public function totalStokMasuk(): int
     {
+        if ($this->relationLoaded('stoks')) {
+            return (int) $this->stoks->sum('stok_jumlah');
+        }
+
         return (int) $this->stoks()->sum('stok_jumlah');
     }
 
     public function totalTerjual(?int $ignoreDetailId = null): int
     {
+        if (is_null($ignoreDetailId) && $this->relationLoaded('penjualanDetails')) {
+            return (int) $this->penjualanDetails->sum('jumlah');
+        }
+
         return (int) $this->penjualanDetails()
             ->when($ignoreDetailId, fn ($query) => $query->whereKeyNot($ignoreDetailId))
             ->sum('jumlah');

@@ -16,4 +16,11 @@ class EditPenjualan extends EditRecord
             DeleteAction::make(),
         ];
     }
+
+    public function mount(int|string $record): void
+    {
+        abort_unless(auth()->user()?->isAdministrator(), 403);
+
+        parent::mount($record);
+    }
 }

@@ -27,12 +27,12 @@ class PenjualanPolicy
 
     public function update(?User $user, Penjualan $penjualan): bool
     {
-        return $this->canManagePenjualan($user);
+        return $this->isAdmin($user);
     }
 
     public function delete(?User $user, Penjualan $penjualan): bool
     {
-        return $this->canManagePenjualan($user);
+        return $this->isAdmin($user);
     }
 
     public function deleteAny(?User $user): bool

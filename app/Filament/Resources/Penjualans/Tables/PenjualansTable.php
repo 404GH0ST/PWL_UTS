@@ -29,17 +29,16 @@ class PenjualansTable
                     ->searchable(),
                 TextColumn::make('penjualan_kode')
                     ->label('Kode')
-                    ->searchable()
-                    ->description(fn (Penjualan $record): string => 'Total: ' . self::formatRupiah(
-                        (int) $record->penjualanDetails->sum(fn ($detail) => $detail->harga * $detail->jumlah)
-                    )),
+                    ->searchable(),
                 TextColumn::make('penjualan_tanggal')
                     ->label('Tanggal')
                     ->dateTime('d/m/Y H:i')
                     ->sortable(),
                 TextColumn::make('total_item')
-                    ->label('Qty')
-                    ->state(fn (Penjualan $record): int => (int) $record->penjualanDetails->sum('jumlah')),
+                    ->label('Qty'),
+                TextColumn::make('total_harga')
+                    ->label('Total')
+                    ->state(fn (Penjualan $record): string => self::formatRupiah($record->total_harga)),
             ])
             ->filters([
                 SelectFilter::make('user_id')

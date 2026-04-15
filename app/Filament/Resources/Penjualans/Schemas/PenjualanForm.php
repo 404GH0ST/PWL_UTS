@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Penjualans\Schemas;
 
 use App\Models\Barang;
+use App\Models\Penjualan;
 use App\Models\PenjualanDetail;
 use Closure;
 use Filament\Forms\Components\DateTimePicker;
@@ -29,7 +30,13 @@ class PenjualanForm
                             ->relationship('user', 'nama')
                             ->required()
                             ->searchable()
-                            ->preload(),
+                            ->preload()
+                            ->default(fn (): ?int => auth()->id())
+                            ->disabled(fn (): bool => ! auth()->user()?->isAdministrator())
+                            ->dehydrated()
+                            ->helperText(fn (): ?string => auth()->user()?->isAdministrator()
+                                ? null
+                                : 'Kasir otomatis mengikuti akun yang sedang login.'),
                         TextInput::make('pembeli')
                             ->label('Nama Pembeli')
                             ->required()
@@ -39,11 +46,19 @@ class PenjualanForm
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(20)
-                            ->default('PJ-' . now()->format('YmdHis')),
+                            ->readOnly()
+                            ->dehydrated()
+                            ->default(fn (): string => Penjualan::generateKode()),
                         DateTimePicker::make('penjualan_tanggal')
                             ->label('Tanggal Penjualan')
                             ->required()
-                            ->default(now()),
+                            ->default(now())
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(
+                                fn (mixed $state, Set $set, string $operation): null => $operation === 'create'
+                                    ? $set('penjualan_kode', Penjualan::generateKode($state))
+                                    : null
+                            ),
                     ])
                     ->columns(2),
                 Section::make('Detail Barang')
